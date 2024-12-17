@@ -14,4 +14,3 @@
 
 ## ライセンス上の注意
 apiファイル下では[voicevox_Engine](https://github.com/VOICEVOX/voicevox_engine)を用いています。
-現時点では改変を施していないため、一時的にプライベートリポジトリで開発を行います。
