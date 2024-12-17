@@ -1,0 +1,27 @@
+version: '1'
+services:
+  voicevox_engine:
+    build: api/
+    image: voicevox/voicevox_engine:cpu-ubuntu20.04-latest
+    expose:
+      - "50021"
+    networks:
+      - internal_network
+    tty: true
+
+  frontend:
+    build: frontend/
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  backend:
+    build: backend/
+    ports:
+      - "5001:5000"
+    networks:
+      - internal_network
+  
+  redis:
+    image: redis
