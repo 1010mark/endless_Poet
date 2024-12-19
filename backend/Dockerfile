@@ -1,4 +1,4 @@
-# 親イメージはpython。apiと揃えてUbuntuを導入することも考慮したが、余計な圧迫することを避けた。
+# 親イメージはpython。voicevoxと揃えてUbuntuを導入することも考慮したが、余計な圧迫を避けた。
 FROM python:3.11
 
 # 作業ディレクトリを/appに設定

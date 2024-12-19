@@ -1,20 +1,13 @@
-version: '1'
+version: '3'
 services:
   voicevox_engine:
-    build: api/
-    image: voicevox/voicevox_engine:cpu-ubuntu20.04-latest
+    image: voicevox/voicevox_engine:cpu-latest
     expose:
-      - "50021"
+      - "50021:50021"
     networks:
       - internal_network
     tty: true
-
-  frontend:
-    build: frontend/
-    ports:
-      - "3000:3000"
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    restart: unless-stopped 
 
   backend:
     build: backend/
@@ -25,3 +18,17 @@ services:
   
   redis:
     image: redis
+
+  app:
+    build: frontend/
+    ports:
+      - "3000:3000"
+  # TODO 本番環境用ビルドコマンドに変更
+    command: ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
+  # 開発環境用ホットリロード
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+networks:
+  internal_network:
+    driver: bridge
