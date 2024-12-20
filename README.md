@@ -12,5 +12,5 @@
 - Todo
 - 後で書く
 
-## ライセンス上の注意
-apiファイル下では[voicevox_Engine](https://github.com/VOICEVOX/voicevox_engine)を用いています。
+## 注意
+[voicevox_Engine](https://github.com/VOICEVOX/voicevox_engine)を用いています。
