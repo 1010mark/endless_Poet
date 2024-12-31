@@ -1,0 +1,9 @@
+flask
+flask_cors
+redis
+requests
+flask-socketio
+openai
+pydub
+timeout_decorator
+eventlet

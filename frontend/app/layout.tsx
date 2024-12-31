@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
+import { M_PLUS_1 } from "next/font/google";
 import "./globals.css";
+import Head from 'next/head';
 
-const noto = Noto_Sans_JP({
-  subsets: ['latin'],
+const mplus = M_PLUS_1({
+  subsets: ['latin']
 });
 
 export const metadata: Metadata = {
@@ -16,9 +17,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Todo ogp設定
   return (
     <html lang="jp">
-      <body className={noto.className}>
+      <Head>
+        <title>生成詩人A - Boundless Voices</title>
+        <meta property="og:title" content="タイトル" />
+        <meta property="og:description" content="description" />
+        <meta property="og:image" content="imageURL" />
+        <meta property="og:url" content="URL" />
+        <meta name="twitter:card" content="twitterimage" />
+        <meta name='twitter:title' content="生成詩人A - Boundless Voices" />
+        <meta name='twitter:description' content="" />
+        <meta name='twitter:image' content="" />
+      </Head>
+      <body className={mplus.className}>
         {children}
       </body>
     </html>

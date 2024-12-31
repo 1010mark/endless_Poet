@@ -1,11 +1,47 @@
 import requests
 from pydub import AudioSegment
-import math
-import io
-# from datetime import datetime
+import math, io
+from sudachipy import tokenizer, dictionary
 
 # VOICEVOXエンジンのURL
 BASE_URL = "http://voicevox_engine:50021"
+tokenizer_obj = dictionary.Dictionary().create()
+mode = tokenizer.Tokenizer.SplitMode.C 
+
+def get_tokens(text):
+    text = text.replace("\n", "")
+    tokens = []
+    chunk = ""
+
+    for m in tokenizer_obj.tokenize(text, mode):
+        chunk += m.surface()
+        if m.part_of_speech()[0] in ["助詞", "助動詞"]:
+            tokens.append(chunk)
+            chunk = ""
+
+    if chunk:
+        tokens.append(chunk)
+    # print(tokens)
+    result = []
+    current = ""
+    for token in tokens:
+        # print(f"current: {current}, token: {token}")
+        if len(token) <= 2 and len(result) > 0 and result[-1][-1] not in "。、":
+            current += token
+        else:
+            if current:  # すでに結合中の文字列があれば追加
+                if current[0] in "、。" and len(result) > 0:
+                    result[-1] += current[0]
+                    result.append(current[1:])
+                else: result.append(current)
+                current = token
+            else:
+                result.append(token)
+
+    if current:  # 最後に残った文字列を追加
+        result.append(current)
+    
+    return result    
 
 # アクセント句を取得
 def get_accent_phrases(text, speaker_id):
@@ -26,7 +62,6 @@ def synthesize_voice(text, speaker_id, BPM):
     audio_query["postPhonemeLength"] = 0
     audio_query["prePhonemeLength"] = 0
     audio_query["speedScale"] = BPM/120
-    # print(audio_query)
     response = requests.post(
         f"{BASE_URL}/synthesis",
         json=audio_query,
@@ -40,14 +75,17 @@ def generate_audio_on_bpm(text, SPEAKER_ID = 47, BPM = 120, max_duration = 60):
     BEAT_DURATION = 60 / BPM  # 1拍の長さ（秒）
     silence_adjust = 0.02 * 120 / BPM # レイテンシ調整
     # アクセント句を取得
-    accent_phrases = get_accent_phrases(text, SPEAKER_ID)
+    # accent_phrases = get_accent_phrases(text, SPEAKER_ID)
+    accent_phrases = get_tokens(text)
+    print(accent_phrases)
     one_beat_duration = BEAT_DURATION
     script = []
     combined_audio = AudioSegment.silent(duration=0)  # 空のオーディオ
     for i, phrase in enumerate(accent_phrases):
         # アクセント句を文字列に変換
-        phrase_text = "".join(mora["text"] for mora in phrase if mora["text"])
-        print(f"Processing accent phrase: {phrase_text}")
+        # phrase_text = "".join(mora["text"] for mora in phrase if mora["text"])
+        phrase_text = phrase
+        # print(f"Processing accent phrase: {phrase_text}")
 
         # 音声生成
         audio_data = synthesize_voice(phrase_text, SPEAKER_ID, BPM)

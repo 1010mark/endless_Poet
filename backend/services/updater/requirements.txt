@@ -1,0 +1,8 @@
+pydub
+redis
+requests
+openai
+sudachipy 
+sudachidict_core
+numpy
+timeout_decorator
