@@ -4,13 +4,10 @@ from openai import OpenAI
 
 system_prompt = \
 """
-以下の文章の続きを生成してください。
+文章の続きを生成してください。
 ただし、時にはレトリックを、時には力強い表現を使ってください。できるだけ長い文章を生成してください。
 発音した際の語感の良さも重要です。ただ、メッセージ性も忘れずに。
 返答は必ず文章の続きのみを返してください。それ以外の情報は含めないでください。
-
----
-
 """
 
 initial_Lyrics = \
@@ -39,7 +36,7 @@ def generateLyrics():
                 pre_script += item["text"]
             if pre_script == "":
                 pre_script = initial_Lyrics
-        res = query_openai(system_prompt + pre_script)
+        res = query_openai(system_prompt, pre_script)
         if res["result"]:
             return res["chatgpt_result"]
         else:
@@ -50,13 +47,14 @@ def generateLyrics():
         return initial_Lyrics
     
 @timeout_decorator.timeout(20, use_signals=False)
-def query_openai(prompt):
+def query_openai(prompt, userInput):
     client = OpenAI()
     try:
         chatgpt_result = client.chat.completions.create(
-            model="o1-mini",
+            model="gpt-4o",
             messages=[
-                {"role": "user", "content": prompt}
+                {"role": "developer", "content": prompt},
+                {"role": "user", "content": userInput}
             ],
             n=1,
             max_completion_tokens=8192

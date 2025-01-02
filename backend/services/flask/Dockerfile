@@ -10,6 +10,7 @@ WORKDIR /api
 # 現在のディレクトリの内容をコンテナ内の/apiにコピー
 COPY ./services/flask /api
 COPY ./tools /api/tools
+COPY ./resources /api/resources
 
 # requirements.txtで指定された必要なパッケージをインストール
 RUN pip install --no-cache-dir -r requirements.txt
